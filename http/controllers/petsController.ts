@@ -7,7 +7,7 @@ import {TRequest, TResponse} from "../../src/types/Express";
 export class PetsController {
     static async getPets(request: TRequest, response: TResponse) {
         try {
-            const getPetsDTO = GetPetsDTO.createDTO(request.body);
+            const getPetsDTO = GetPetsDTO.createDTO(request.query);
             const petService = new petsService();
             const httpResponse = await petService.getPets(getPetsDTO);
 
