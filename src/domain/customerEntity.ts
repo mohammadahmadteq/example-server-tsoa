@@ -4,7 +4,6 @@ export interface ICustomer {
     customerId: string;
 }
 
-
 export class CustomerEntity implements ICustomer {
     firstName: string;
     lastName: string;
@@ -16,7 +15,7 @@ export class CustomerEntity implements ICustomer {
         this.customerId = customer.customerId;
     }
 
-    static createCustomer (customer: unknown) {
-        return new CustomerEntity(customer as ICustomer)
+    static createCustomer(customer: unknown) {
+        return new CustomerEntity(customer as ICustomer);
     }
 }

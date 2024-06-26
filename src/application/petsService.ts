@@ -1,21 +1,35 @@
-import { PetEntity } from "src/domain/petEntitiy";
-import { placeHolderPets } from "src/infrastructure/petsData";
-import { GetPetsDTO } from "./dto/getPetsDTO";
+import {PetEntity} from "../domain/petEntitiy";
+import {placeHolderPets} from "../infrastructure/petsData";
+import {GetPetsDTO} from "./dto/getPetsDTO";
+import HttpResponse from "./utils/httpResponse";
+import {AddPetsDTO} from "./dto/addPetsDTO";
 
 export class petsService {
     getPets(getPetsDto: GetPetsDTO) {
-        const petsEntity: PetEntity[] = []
+        const petEntities: PetEntity[] = [];
 
         for (const pet of placeHolderPets) {
-            if(getPetsDto.name && getPetsDto.name !== pet.name) continue;
-            
-            if(getPetsDto.species && getPetsDto.species !== pet.species) continue;
+            if (getPetsDto.name && getPetsDto.name !== pet.name) continue;
 
-            petsEntity.push( PetEntity.createPet(pet));
+            if (getPetsDto.species && getPetsDto.species !== pet.species) continue;
+
+            petEntities.push(PetEntity.createPet(pet));
         }
 
-        if(petsEntity.length > 0) return petsEntity
+        if (petEntities.length > 0) return HttpResponse.ok(petEntities);
 
-        return {status: "error", message: "not found"}
+        return HttpResponse.notFound();
+    }
+
+    addPets(addPetsDto: AddPetsDTO) {
+        const petEntity = PetEntity.createPet(addPetsDto);
+
+        if (petEntity.petId) {
+            return HttpResponse.ok(petEntity);
+        }
+
+        return HttpResponse.error({
+            message: "error creating pet"
+        });
     }
 }

@@ -44,7 +44,6 @@
     "include": ["**/*"],
     "exclude": ["node_modules", "build", "coverage", "storage", "certificates", ".vscode"],
     "ts-node": {
-        "files": true,
-        "require": ["tsconfig-paths/register"]
+        "files": true
     }
 }
