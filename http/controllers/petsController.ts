@@ -1,31 +1,38 @@
+import { IPet } from "../../src/domain/petEntitiy";
 import {AddPetsDTO} from "../../src/application/dto/addPetsDTO";
 import {GetPetsDTO} from "../../src/application/dto/getPetsDTO";
 import {petsService} from "../../src/application/petsService";
-import HttpResponse from "../../src/application/utils/httpResponse";
-import {TRequest, TResponse} from "../../src/types/Express";
+// import HttpResponse from "../../src/application/utils/httpResponse";
+// import {TRequest, TResponse} from "../../src/types/Express";
+import {Body, Controller, Get, Post, Res, Query, Route, SuccessResponse, TsoaResponse} from "tsoa";
 
-export class PetsController {
-    static async getPets(request: TRequest, response: TResponse) {
+@Route("/petsapp/pet")
+export class PetsController extends Controller {
+    @SuccessResponse("200", "Found")
+    @Get("/")
+    public async getPets(@Query() query: string, @Res() success: TsoaResponse<200, IPet[]>, @Res() error: TsoaResponse<500, { status: string, message: string }>): Promise<void> {
         try {
-            const getPetsDTO = GetPetsDTO.createDTO(request.query);
+            const getPetsDTO = GetPetsDTO.createDTO(query);
             const petService = new petsService();
             const httpResponse = await petService.getPets(getPetsDTO);
-
-            return HttpResponse.convertToExpress(response, httpResponse);
-        } catch (error) {
-            return HttpResponse.convertToExpress(response, HttpResponse.error({message: error as string}));
+    
+            success(200, httpResponse.body as IPet[]);
+        } catch (err) {
+            error(500, { status: "error", message: (err as Error).message });
         }
-    }
+  }
 
-    static async addPets(request: TRequest, response: TResponse) {
+    @SuccessResponse("201", "Created")
+    @Post("/")
+    public async addPets(@Body() body: AddPetsDTO, @Res() success: TsoaResponse<200, String>, @Res() error: TsoaResponse<500, { status: string, message: string }>): Promise<void> {
         try {
-            const addPetsDTO = AddPetsDTO.createDTO(request.body);
+            const addPetsDTO = AddPetsDTO.createDTO(body);
             const petService = new petsService();
             const httpResponse = await petService.addPets(addPetsDTO);
 
-            return HttpResponse.convertToExpress(response, httpResponse);
-        } catch (error) {
-            return HttpResponse.convertToExpress(response, HttpResponse.error({message: error as string}));
+            success(200, "Created pets successfully");
+        } catch (err) {
+            error(500, { status: "error", message: (err as Error).message }); 
         }
     }
 }
