@@ -10,9 +10,9 @@ import {Body, Controller, Get, Post, Res, Query, Route, SuccessResponse, TsoaRes
 export class PetsController extends Controller {
     @SuccessResponse("200", "Found")
     @Get("/")
-    public async getPets(@Query() query: string, @Res() success: TsoaResponse<200, IPet[]>, @Res() error: TsoaResponse<500, { status: string, message: string }>): Promise<void> {
+    public async getPets(@Res() success: TsoaResponse<200, IPet[]>, @Res() error: TsoaResponse<500, { status: string, message: string }>, @Query() query?: string): Promise<void> {
         try {
-            const getPetsDTO = GetPetsDTO.createDTO(query);
+            const getPetsDTO = GetPetsDTO.createDTO(query || "");
             const petService = new petsService();
             const httpResponse = await petService.getPets(getPetsDTO);
     
@@ -24,13 +24,13 @@ export class PetsController extends Controller {
 
     @SuccessResponse("201", "Created")
     @Post("/")
-    public async addPets(@Body() body: AddPetsDTO, @Res() success: TsoaResponse<200, String>, @Res() error: TsoaResponse<500, { status: string, message: string }>): Promise<void> {
+    public async addPets(@Body() body: AddPetsDTO, @Res() success: TsoaResponse<200, IPet>, @Res() error: TsoaResponse<500, { status: string, message: string }>): Promise<void> {
         try {
             const addPetsDTO = AddPetsDTO.createDTO(body);
             const petService = new petsService();
-            const httpResponse = await petService.addPets(addPetsDTO);
+            const response = await petService.addPets(addPetsDTO);
 
-            success(200, "Created pets successfully");
+            success(200, response.body as IPet);
         } catch (err) {
             error(500, { status: "error", message: (err as Error).message }); 
         }

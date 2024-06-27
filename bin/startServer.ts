@@ -1,17 +1,15 @@
-import express, {json, urlencoded} from "express";
+import express from "express";
+import bodyParser from "body-parser";
+import cors from "cors";
 // import {petsRouter} from "../http/routes/petRoutes";
-// import {RegisterRoutes} from "../build/routes";
+import {RegisterRoutes} from "../http/routes/routes";
 
-const app = express();
+export const app = express();
+app.use(cors());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
 
-app.use(
-    urlencoded({
-      extended: true,
-    })
-  );
-app.use(json());
-
-// RegisterRoutes(app);
+RegisterRoutes(app);
 // app.use("/petsapp/pet", petsRouter);
 
 app.listen(Number(3020), "0.0.0.0", () => {

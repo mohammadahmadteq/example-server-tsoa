@@ -54,9 +54,9 @@ export function RegisterRoutes(app: Router) {
 
             async function PetsController_getPets(request: ExRequest, response: ExResponse, next: any) {
             const args: Record<string, TsoaRoute.ParameterSchema> = {
-                    query: {"in":"query","name":"query","required":true,"dataType":"string"},
                     success: {"in":"res","name":"200","required":true,"dataType":"array","array":{"dataType":"refObject","ref":"IPet"}},
                     error: {"in":"res","name":"500","required":true,"dataType":"nestedObjectLiteral","nestedProperties":{"message":{"dataType":"string","required":true},"status":{"dataType":"string","required":true}}},
+                    query: {"in":"query","name":"query","dataType":"string"},
             };
 
             // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
@@ -87,7 +87,7 @@ export function RegisterRoutes(app: Router) {
             async function PetsController_addPets(request: ExRequest, response: ExResponse, next: any) {
             const args: Record<string, TsoaRoute.ParameterSchema> = {
                     body: {"in":"body","name":"body","required":true,"ref":"AddPetsDTO"},
-                    success: {"in":"res","name":"200","required":true,"dataType":"string"},
+                    success: {"in":"res","name":"200","required":true,"ref":"IPet"},
                     error: {"in":"res","name":"500","required":true,"dataType":"nestedObjectLiteral","nestedProperties":{"message":{"dataType":"string","required":true},"status":{"dataType":"string","required":true}}},
             };
 
