@@ -6,7 +6,7 @@ import {petsService} from "../../src/application/petsService";
 // import {TRequest, TResponse} from "../../src/types/Express";
 import {Body, Controller, Get, Post, Res, Query, Route, SuccessResponse, TsoaResponse, Middlewares} from "tsoa";
 import { authMiddleware } from "../middlewares/auth";
-import { GetAPetDTO } from "src/application/dto/getAPetDTO";
+import { GetAPetDTO } from "../../src/application/dto/getAPetDTO";
 
 @Route("/petsapp/pet")
 export class PetsController extends Controller {
