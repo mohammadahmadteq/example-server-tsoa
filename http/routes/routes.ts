@@ -106,6 +106,38 @@ export function RegisterRoutes(app: Router) {
             }
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        app.get('/petsapp/pet/single',
+            ...(fetchMiddlewares<RequestHandler>(PetsController)),
+            ...(fetchMiddlewares<RequestHandler>(PetsController.prototype.getAPet)),
+
+            async function PetsController_getAPet(request: ExRequest, response: ExResponse, next: any) {
+            const args: Record<string, TsoaRoute.ParameterSchema> = {
+                    success: {"in":"res","name":"200","required":true,"ref":"IPet"},
+                    error: {"in":"res","name":"500","required":true,"dataType":"nestedObjectLiteral","nestedProperties":{"message":{"dataType":"string","required":true},"status":{"dataType":"string","required":true}}},
+                    name: {"in":"query","name":"name","required":true,"dataType":"string"},
+            };
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = templateService.getValidatedArgs({ args, request, response });
+
+                const controller = new PetsController();
+
+              await templateService.apiHandler({
+                methodName: 'getAPet',
+                controller,
+                response,
+                next,
+                validatedArgs,
+                successStatus: 200,
+              });
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
         app.post('/petsapp/pet',
             ...(fetchMiddlewares<RequestHandler>(PetsController)),
             ...(fetchMiddlewares<RequestHandler>(PetsController.prototype.addPets)),

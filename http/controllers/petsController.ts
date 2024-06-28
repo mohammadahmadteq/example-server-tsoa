@@ -6,6 +6,7 @@ import {petsService} from "../../src/application/petsService";
 // import {TRequest, TResponse} from "../../src/types/Express";
 import {Body, Controller, Get, Post, Res, Query, Route, SuccessResponse, TsoaResponse, Middlewares} from "tsoa";
 import { authMiddleware } from "../middlewares/auth";
+import { GetAPetDTO } from "src/application/dto/getAPetDTO";
 
 @Route("/petsapp/pet")
 export class PetsController extends Controller {
@@ -22,7 +23,22 @@ export class PetsController extends Controller {
         } catch (err) {
             error(500, { status: "error", message: (err as Error).message });
         }
-  }
+    }
+
+    @SuccessResponse("200", "Found")
+    @Get("/single")
+    @Middlewares(authMiddleware)
+    public async getAPet(@Res() success: TsoaResponse<200, IPet>, @Res() error: TsoaResponse<500, { status: string, message: string }>, @Query() name: string): Promise<void> {
+        try {
+            const getAPetDTO = GetAPetDTO.createDTO({ name });
+            const petService = new petsService();
+            const httpResponse = await petService.getAPet(getAPetDTO);
+
+            success(200, httpResponse.body as IPet);
+        } catch (err) {
+            error(500, { status: "error", message: (err as Error).message });
+        }
+    }
 
     @SuccessResponse("201", "Created")
     @Post("/")
