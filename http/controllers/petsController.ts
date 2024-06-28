@@ -4,12 +4,14 @@ import {GetPetsDTO} from "../../src/application/dto/getPetsDTO";
 import {petsService} from "../../src/application/petsService";
 // import HttpResponse from "../../src/application/utils/httpResponse";
 // import {TRequest, TResponse} from "../../src/types/Express";
-import {Body, Controller, Get, Post, Res, Query, Route, SuccessResponse, TsoaResponse} from "tsoa";
+import {Body, Controller, Get, Post, Res, Query, Route, SuccessResponse, TsoaResponse, Middlewares} from "tsoa";
+import { authMiddleware } from "../middlewares/auth";
 
 @Route("/petsapp/pet")
 export class PetsController extends Controller {
     @SuccessResponse("200", "Found")
     @Get("/")
+    @Middlewares(authMiddleware)
     public async getPets(@Res() success: TsoaResponse<200, IPet[]>, @Res() error: TsoaResponse<500, { status: string, message: string }>, @Query() query?: string): Promise<void> {
         try {
             const getPetsDTO = GetPetsDTO.createDTO(query || "");
@@ -24,6 +26,7 @@ export class PetsController extends Controller {
 
     @SuccessResponse("201", "Created")
     @Post("/")
+    @Middlewares(authMiddleware)
     public async addPets(@Body() body: AddPetsDTO, @Res() success: TsoaResponse<200, IPet>, @Res() error: TsoaResponse<500, { status: string, message: string }>): Promise<void> {
         try {
             const addPetsDTO = AddPetsDTO.createDTO(body);
