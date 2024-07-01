@@ -11,21 +11,33 @@ async function uploadFile() {
         scopes: ['https://www.googleapis.com/auth/drive.file'],
     });
     const drive = googleapis_1.google.drive({ version: 'v3', auth });
-    const fileMetadata = {
-        name: 'swagger.json',
-        parents: ['13sd2JwYrJOX-NCExymKjGmoFzYtr20Pu'],
-    };
-    const media = {
-        mimeType: 'application/json',
-        body: fs_1.default.createReadStream('http/output/swagger.json'),
-    };
+    const folderId = '13sd2JwYrJOX-NCExymKjGmoFzYtr20Pu';
     try {
-        const response = await drive.files.create({
+        const searchResponse = await drive.files.list({
+            q: `'${folderId}' in parents and name = 'swagger.json' and trashed = false`,
+            fields: 'files(id, name)',
+        });
+        const files = searchResponse.data.files ?? [];
+        if (files.length > 0 && files[0]?.id) {
+            const fileId = files[0].id ?? '';
+            console.log(`Found existing swagger.json file with ID: ${fileId}. Deleting it...`);
+            await drive.files.delete({ fileId });
+            console.log('Deleted existing swagger.json file.');
+        }
+        const fileMetadata = {
+            name: 'swagger.json',
+            parents: [folderId],
+        };
+        const media = {
+            mimeType: 'application/json',
+            body: fs_1.default.createReadStream('http/output/swagger.json'),
+        };
+        const uploadResponse = await drive.files.create({
             requestBody: fileMetadata,
             media: media,
             fields: 'id',
         });
-        console.log('File Id:', response.data.id);
+        console.log('Uploaded new swagger.json file with ID:', uploadResponse.data.id);
     }
     catch (error) {
         console.error('Error uploading file:', error);
