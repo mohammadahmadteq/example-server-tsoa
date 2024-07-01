@@ -2,4 +2,4 @@ yarn.lock
 
 node_modules/
 
-keys/service-account-key.json
+service-account-key.json
