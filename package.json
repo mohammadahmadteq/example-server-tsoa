@@ -11,9 +11,11 @@
         "uuid": "^10.0.0"
     },
     "scripts": {
-        "build": "tsc",
-        "start": "node ./dist/bin/startServer.js",
-        "dev": "ts-node ./bin/startServer.ts"
+        "start": "node ./build/bin/startServer.js",
+        "dev": "ts-node ./bin/startServer.ts",
+        "generate:swagger": "tsoa spec && tsoa routes",
+        "upload:swagger": "ts-node scripts/uploadSwagger.ts",
+        "build": "tsc && npm run generate:swagger && npm run upload:swagger"
     },
     "devDependencies": {
         "@types/body-parser": "^1.19.5",
