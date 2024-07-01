@@ -6,7 +6,7 @@ import fs from 'fs';
 
 async function uploadFile() {
   const auth = new google.auth.GoogleAuth({
-    keyFile: '../credentials.json',
+    keyFile: './credentials.json',
     scopes: ['https://www.googleapis.com/auth/drive.file'],
   });
 
@@ -18,7 +18,7 @@ async function uploadFile() {
   };
   const media = {
     mimeType: 'application/json',
-    body: fs.createReadStream('../http/output/swagger.json'),
+    body: fs.createReadStream('http/output/swagger.json'),
   };
 
   try {
