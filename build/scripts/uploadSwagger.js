@@ -5,13 +5,20 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const googleapis_1 = require("googleapis");
 const fs_1 = __importDefault(require("fs"));
+const dotenv_1 = __importDefault(require("dotenv"));
+dotenv_1.default.config();
 async function uploadFile() {
+    const keyFile = process.env['GOOGLE_SERVICE_ACCOUNT_KEY'];
+    const folderId = process.env['GOOGLE_DRIVE_FOLDER_ID'];
+    if (!keyFile || !folderId) {
+        console.error('Missing GOOGLE_SERVICE_ACCOUNT_KEY or GOOGLE_DRIVE_FOLDER_ID in environment variables.');
+        return;
+    }
     const auth = new googleapis_1.google.auth.GoogleAuth({
-        keyFile: './keys/service-account-key.json',
+        keyFile: keyFile,
         scopes: ['https://www.googleapis.com/auth/drive.file'],
     });
     const drive = googleapis_1.google.drive({ version: 'v3', auth });
-    const folderId = '13sd2JwYrJOX-NCExymKjGmoFzYtr20Pu';
     try {
         const searchResponse = await drive.files.list({
             q: `'${folderId}' in parents and name = 'swagger.json' and trashed = false`,
@@ -37,7 +44,12 @@ async function uploadFile() {
             media: media,
             fields: 'id',
         });
-        console.log('Uploaded new swagger.json file with ID:', uploadResponse.data.id);
+        if (uploadResponse.data && 'id' in uploadResponse.data) {
+            console.log('Uploaded new swagger.json file with ID:', uploadResponse.data.id);
+        }
+        else {
+            console.error('Unexpected response format:', uploadResponse.data);
+        }
     }
     catch (error) {
         console.error('Error uploading file:', error);
